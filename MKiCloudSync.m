@@ -38,7 +38,9 @@
     
     [dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         
-        [[NSUbiquitousKeyValueStore defaultStore] setObject:obj forKey:key];
+        if( ![key isEqualToString:@"use_icloud_sync"] ) {
+         [[NSUbiquitousKeyValueStore defaultStore] setObject:obj forKey:key];   
+        }
     }];
     
     [[NSUbiquitousKeyValueStore defaultStore] synchronize];
@@ -56,8 +58,9 @@
                                                   object:nil];
 
     [dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        
-        [[NSUserDefaults standardUserDefaults] setObject:obj forKey:key];
+        if( ![key isEqualToString:@"use_icloud_sync"] ) {
+            [[NSUserDefaults standardUserDefaults] setObject:obj forKey:key];
+        }
     }];
 
     [[NSUserDefaults standardUserDefaults] synchronize];
@@ -94,6 +97,12 @@
         DLog(@"Not an iOS 5 device");        
     }
 }
+
++(void) stop {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 
 + (void) dealloc {
     
